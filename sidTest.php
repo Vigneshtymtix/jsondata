@@ -35,7 +35,7 @@
 	echo "if [[ $? -ne 0 ]]; then\n";
 	echo "    echo Creating new tunnel connection to Server\n";
 	echo "    createTunnel\n";
-  echo "    sudo sed -i 's/\r$//' /var/spool/cron/crontabs/pi\n";
+	echo "    sudo sed -i 's/\r$//' /var/spool/cron/crontabs/pi\n";
 	echo "fi\n";
 
 	/*
