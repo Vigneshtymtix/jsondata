@@ -42,7 +42,7 @@ for i in range(farmewin):
 
 ############################################################################
 def readcamerasettings():	
-	global still_time, still_interval,motion_area,motion_threshold,flip_image,masks
+	global still_time, still_interval,motion_area,motion_threshold,flip_image,masks,rotate_image
 	myvars = {}
 	if os.path.isfile("camsettings.txt"):
 		with open("camsettings.txt") as myfile:
@@ -81,9 +81,11 @@ def readcamerasettings():
 	
 
 readcamerasettings()
-
-camera = cv2.VideoCapture(0)
+#print "Test Line"
+camera = cv2.VideoCapture()
+print "VideoCapture"
 #camera = picamera.PiCamera()
+print "Pi Camera"
 #camera.framerate = 30
 #camera.rotation = rotate_image
 
@@ -149,6 +151,32 @@ def saveImage(saveimage):
 	else:
 		print "Frames Too Fast"
 
+def rotate_image(mat, angle):
+		print "Angle: ",angle
+		floatAngle = float(angle)
+		#Rotates an image (angle in degrees) and expands image to avoid cropping
+
+		height, width = mat.shape[:2] # image shape has 3 dimensions
+		image_center = (width/2, height/2) # getRotationMatrix2D needs coordinates in reverse order (width, height) compared to shape
+
+		rotation_mat = cv2.getRotationMatrix2D(image_center, floatAngle, 1.)
+
+		# rotation calculates the cos and sin, taking absolutes of those.
+		abs_cos = abs(rotation_mat[0,0])
+		abs_sin = abs(rotation_mat[0,1])
+
+		# find the new width and height bounds
+		bound_w = int(height * abs_sin + width * abs_cos)
+		bound_h = int(height * abs_cos + width * abs_sin)
+
+		# subtract old image center (bringing image back to origo) and adding the new image center coordinates
+		rotation_mat[0, 2] += bound_w/2 - image_center[0]
+		rotation_mat[1, 2] += bound_h/2 - image_center[1]
+
+		# rotate image with the new bounds and translated rotation matrix
+		rotated_mat = cv2.warpAffine(mat, rotation_mat, (bound_w, bound_h))
+		return rotated_mat
+
 ############################################################################
 def T(l):
 	global lasttime
@@ -167,12 +195,10 @@ while True:
 #	T("####### S ########")
 #	camera.capture(frame, format='rgb', use_video_port=True)
 	res, pimage = camera.read()
-	if( rotate_image == 90 ):
-		pimage=cv2.rotate(pimage, cv2.ROTATE_90_CLOCKWISE)
-	if( rotate_image == 180 ):
-		pimage=cv2.rotate(pimage, cv2.ROTATE_180_CLOCKWISE)
-	if( rotate_image == 270 ):
-		pimage=cv2.rotate(pimage, cv2.ROTATE_270_CLOCKWISE)
+
+	if( rotate_image_val != 0 ):
+		pimage = rotate_image(image,rotate_image_val)
+        
 
 		
 	if not res:
@@ -216,7 +242,6 @@ while True:
 		time.sleep(.25)
 		
 #	T("SF")
-
 
 	## Delte the frame
 	frame.truncate(0)
