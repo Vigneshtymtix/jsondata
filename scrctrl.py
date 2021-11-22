@@ -166,13 +166,13 @@ while True:
 	
 #	T("####### S ########")
 #	camera.capture(frame, format='rgb', use_video_port=True)
-	res,image = camera.read()
+	res, pimage = camera.read()
 	if( rotate_image == 90 ):
-		image=cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+		image=cv2.rotate(pimage, cv2.ROTATE_90_CLOCKWISE)
 	if( rotate_image == 180 ):
-		image=cv2.rotate(image, cv2.ROTATE_180_CLOCKWISE)
+		image=cv2.rotate(pimage, cv2.ROTATE_180_CLOCKWISE)
 	if( rotate_image == 270 ):
-		image=cv2.rotate(image, cv2.ROTATE_270_CLOCKWISE)
+		image=cv2.rotate(pimage, cv2.ROTATE_270_CLOCKWISE)
 
 		
 	if not res:
