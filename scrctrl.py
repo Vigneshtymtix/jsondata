@@ -166,7 +166,7 @@ while True:
 	
 #	T("####### S ########")
 #	camera.capture(frame, format='rgb', use_video_port=True)
-	res, image = camera.read()
+	res,image = camera.read()
 	if( rotate_image == 90 ):
 		image=cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
 	if( rotate_image == 180 ):
