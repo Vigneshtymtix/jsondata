@@ -168,11 +168,11 @@ while True:
 #	camera.capture(frame, format='rgb', use_video_port=True)
 	res, pimage = camera.read()
 	if( rotate_image == 90 ):
-		image=cv2.rotate(pimage, cv2.ROTATE_90_CLOCKWISE)
+		pimage=cv2.rotate(pimage, cv2.ROTATE_90_CLOCKWISE)
 	if( rotate_image == 180 ):
-		image=cv2.rotate(pimage, cv2.ROTATE_180_CLOCKWISE)
+		pimage=cv2.rotate(pimage, cv2.ROTATE_180_CLOCKWISE)
 	if( rotate_image == 270 ):
-		image=cv2.rotate(pimage, cv2.ROTATE_270_CLOCKWISE)
+		pimage=cv2.rotate(pimage, cv2.ROTATE_270_CLOCKWISE)
 
 		
 	if not res:
@@ -182,7 +182,7 @@ while True:
 #	T("M")
 	####################################################################
 	## Motion Detection
-	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+	gray = cv2.cvtColor(pimage, cv2.COLOR_BGR2GRAY)
 #	gray = cv2.GaussianBlur(gray, (5,5), 0)
 #	T("M1")
 	
@@ -210,7 +210,7 @@ while True:
 #	motion = 1
 	## Save still if there was motion
 	if motion:
-		savethread = threading.Thread(target=saveImage, args = (image,))
+		savethread = threading.Thread(target=saveImage, args = (pimage,))
 		savethread.daemon = True
 		savethread.start()
 		time.sleep(.25)
