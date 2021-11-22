@@ -32,7 +32,6 @@ video_y_size = 1080
 flip_image = 0
 rotate_image = 0
 masks = []
-show_mask = 0
 
 farmewin = 30
 frameNo = 0
@@ -43,7 +42,7 @@ for i in range(farmewin):
 
 ############################################################################
 def readcamerasettings():	
-	global still_time, still_interval,motion_area,motion_threshold,flip_image,masks,rotate_image,show_mask
+	global still_time, still_interval,motion_area,motion_threshold,flip_image,masks
 	myvars = {}
 	if os.path.isfile("camsettings.txt"):
 		with open("camsettings.txt") as myfile:
@@ -57,7 +56,6 @@ def readcamerasettings():
 			still_interval = myvars['STILL_INTERVAL']
 			flip_image = myvars['FLIP_IMAGE']
 			rotate_image = myvars['ROTATE_IMAGE']
-			show_mask = myvars['SHOWMASK']
 			
 			
 	print "Motion Area: ",motion_area
@@ -66,32 +64,18 @@ def readcamerasettings():
 	print "Still Interval: ",still_interval
 	print "Flip Image: ",flip_image
 	print "Rotate Image: ",rotate_image
-	print "Show Mask: ",show_mask
 	
 	
-	if os.path.isfile("campmask.txt"):
-		with open("campmask.txt") as myfile:
+	if os.path.isfile("cammask.txt"):
+		with open("cammask.txt") as myfile:
 			for line in myfile:
 				print line								#For Debugging
 				temp1 = line.split("|")
 				for m in temp1:
-					mask = np.fromstring(m,dtype=float,sep=',')
+					mask = np.fromstring(m,dtype=int,sep=',')
 					mask = mask.reshape((-1,2))
 					masks.append(mask)
-				print masks								#For Debugging
-				for i in range(0,len(masks)):				
-					for j in range(0,len(mask)):				
-						print masks[i][j]				#For Debugging
-						
-				pmasks = masks[:]
-				for i in range(0,len(pmasks)):				
-					for j in range(0,len(mask)):
-						
-						pmasks[i][j][0] = pmasks[i][j][0]*100;		#For Debugging	
-						pmasks[i][j][1] = pmasks[i][j][1]*100;		#For Debugging	
-						print pmasks[i][j][0]
-						print pmasks[i][j][1]
-						
+				print masks								#For Debugging				
 				
 ############################################################################
 	
@@ -222,13 +206,6 @@ while True:
 		if cv2.contourArea(c) > motion_area:
 			motion = True
 			break
-
-#	T("MF")
-
-	if( show_mask == 1 ):
-		for i in range(0,len(masks)):
-			cv2.fillPoly(image,[masks[i]],(0,0,0))
-			show_mask = 0
 		
 #	motion = 1
 	## Save still if there was motion
