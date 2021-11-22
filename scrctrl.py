@@ -75,7 +75,7 @@ def readcamerasettings():
 	
 	if os.path.isfile("campmask.txt"):
 		with open("campmask.txt") as myfile:
-			for line in myfile:
+			for line in myfile: 
 				print line								#For Debugging
 				temp1 = line.split("|")
 				for m in temp1:
@@ -90,36 +90,25 @@ def readcamerasettings():
 ############################################################################
 readcamerasettings()
 
-try:
-	camera = cv2.VideoCapture(0)
-	cameraType = 1
-	print "Camera Is Type #1"
-except:
-	print "Camera Type #1 Failed"
 	
-try:
-	camera = picamera.PiCamera()
-	camera.framerate = 30
-	camera.rotation = 0
-	cameraType = 2
-	print "Camera Is Type #2"
-except:
-	print "Camera Type #2 Failed"
+camera = cv2.VideoCapture(0)
+cameraType = 1
+print "Camera Is Type #1"
 
 #if camera.rotation == 90 or camera.rotation == 270 :
 #	camera.resolution = (video_y_size,video_x_size)
 #else:
 #	camera.resolution = (video_x_size,video_y_size)
 
-if( cameraType == 2 ):
-	if flip_image == 1:
-		print "########################### Setting Flip Image ON #############################"
-		camera.vflip = False
-		camera.hflip = False
-	else:
-		print "########################### Setting Flip Image OFF ############################"
-		camera.vflip = True
-		camera.hflip = True
+#if( cameraType == 2 ):
+#	if flip_image == 1:
+#		print "########################### Setting Flip Image ON #############################"
+#		camera.vflip = False
+#		camera.hflip = False
+#	else:
+#		print "########################### Setting Flip Image OFF ############################"
+#		camera.vflip = True
+#		camera.hflip = True
 
 frame = PiRGBArray(camera)
 lastgrey = None
@@ -211,27 +200,23 @@ while True:
 	
 #	T("####### S ########")
 
-	if( cameraType == 1 ):
-		res, pimage = camera.read()
-		if( rotate_image == 90 ):
-			image=cv2.rotate(pimage, cv2.ROTATE_90_CLOCKWISE)
-		if( rotate_image == 180 ):
-			image=cv2.rotate(pimage, cv2.ROTATE_180_CLOCKWISE)
-		if( rotate_image == 270 ):
-			image=cv2.rotate(pimage, cv2.ROTATE_270_CLOCKWISE)
-		else:
-			image = pimage
+	res, pimage = camera.read()
+#	if( rotate_image == 90 ):
+#		image=cv2.rotate(pimage, cv2.ROTATE_90_CLOCKWISE)
+#	if( rotate_image == 180 ):
+#		image=cv2.rotate(pimage, cv2.ROTATE_180_CLOCKWISE)
+#	if( rotate_image == 270 ):
+#		image=cv2.rotate(pimage, cv2.ROTATE_270_CLOCKWISE)
+#	else:
+	image = pimage
 			
-		if not res:
-			print "No Image: Quitting"
-			sys.exit()
+	if not res:
+		print "No Image: Quitting"
+		sys.exit()
 			
 
-	if( cameraType == 2 ):
-		camera.capture(frame, format='rgb', use_video_port=True)
-	
 #	T("C")
-	image = frame.array
+#	image = frame.array
 #	T("M")
 	if rotate_image != 0:
 			image = rotateImage(image,rotate_image)
@@ -264,7 +249,7 @@ while True:
 	frameDelta = cv2.absdiff(lastgrey, gray)
 	thresh = cv2.threshold(frameDelta, motion_threshold, 255, cv2.THRESH_BINARY)[1]	
 	thresh = cv2.dilate(thresh, None, iterations=1)
-	(_,cnts,_) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	(cnts,_) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 #	T("M2")
 
 	# loop over the contours
